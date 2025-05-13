@@ -64,9 +64,9 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				searchifi: {
-					'purple': '#6E59A5',
-					'light-purple': '#9B87F5',
-					'dark-purple': '#4A3A80',
+					'purple': '#4078FF',
+					'light-purple': '#60A5FA',
+					'dark-purple': '#2454CF',
 					'light-gray': '#F5F7FB',
 					'dark-gray': '#2A2A2A',
 				}
@@ -105,6 +105,10 @@ export default {
 			},
 			fontFamily: {
 				'inter': ['Inter', 'sans-serif'],
+			},
+			boxShadow: {
+				'card': '0 4px 20px rgba(0, 0, 0, 0.05)',
+				'card-hover': '0 10px 30px rgba(0, 0, 0, 0.1)',
 			}
 		}
 	},

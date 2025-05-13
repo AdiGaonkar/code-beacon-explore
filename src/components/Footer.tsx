@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-searchifi-purple to-searchifi-light-purple grid place-items-center">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-blue-400 grid place-items-center">
                 <Search className="text-white" size={20} />
               </div>
               <h1 className="text-xl font-bold">Searchifi</h1>
