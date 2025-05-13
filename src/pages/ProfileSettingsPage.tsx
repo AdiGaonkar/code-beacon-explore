@@ -1,4 +1,3 @@
-
 import { useState, useRef, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -31,7 +30,7 @@ const ProfileSettingsPage = () => {
     bio: user?.bio || "",
   });
   
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(user?.avatarUrl || null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(user?.avatar || null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -76,7 +75,7 @@ const ProfileSettingsPage = () => {
         ...user,
         name: formData.name,
         bio: formData.bio,
-        avatarUrl: avatarPreview,
+        avatar: avatarPreview,
       };
       
       // Simulate API delay

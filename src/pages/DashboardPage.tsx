@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -89,7 +88,7 @@ const DashboardPage = () => {
               <div className="bg-white dark:bg-card shadow-card rounded-lg p-6">
                 <div className="flex flex-col items-center text-center mb-6">
                   <Avatar className="h-20 w-20 mb-4">
-                    <AvatarImage src={user.avatarUrl} />
+                    <AvatarImage src={user.avatar} />
                     <AvatarFallback className="bg-primary text-primary-foreground text-xl">
                       {user.name.charAt(0)}
                     </AvatarFallback>

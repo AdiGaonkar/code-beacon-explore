@@ -6,6 +6,7 @@ interface User {
   name: string;
   email: string;
   avatar?: string;
+  bio?: string;
 }
 
 interface AuthContextType {
@@ -14,6 +15,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateUserProfile: (updatedUser: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -82,8 +84,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
+  const updateUserProfile = (updatedUser: User) => {
+    // Update user in state and localStorage
+    localStorage.setItem("searchifi_user", JSON.stringify(updatedUser));
+    setUser(updatedUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUserProfile }}>
       {children}
     </AuthContext.Provider>
   );
