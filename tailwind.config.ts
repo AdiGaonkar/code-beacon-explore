@@ -64,10 +64,10 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				searchifi: {
-					'purple': '#4078FF',
-					'light-purple': '#60A5FA',
-					'dark-purple': '#2454CF',
-					'light-gray': '#F5F7FB',
+					'purple': '#4361EE',
+					'light-purple': '#4895EF',
+					'dark-purple': '#3F37C9',
+					'light-gray': '#F8F9FE',
 					'dark-gray': '#2A2A2A',
 				}
 			},
@@ -107,8 +107,9 @@ export default {
 				'inter': ['Inter', 'sans-serif'],
 			},
 			boxShadow: {
-				'card': '0 4px 20px rgba(0, 0, 0, 0.05)',
-				'card-hover': '0 10px 30px rgba(0, 0, 0, 0.1)',
+				'card': '0 8px 30px rgba(0, 0, 0, 0.08)',
+				'card-hover': '0 15px 40px rgba(0, 0, 0, 0.12)',
+				'button': '0 4px 14px 0 rgba(67, 97, 238, 0.4)',
 			}
 		}
 	},

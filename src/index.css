@@ -7,83 +7,83 @@
 
 @layer base {
   :root {
-    --background: 222 47% 97%;
-    --foreground: 222 47% 11%;
+    --background: 220 33% 98%;
+    --foreground: 220 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 220 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 220 25% 15%;
 
-    --primary: 222 89% 64%;
+    --primary: 226 98% 57%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 30% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 220 30% 96%;
+    --secondary-foreground: 220 25% 15%;
 
-    --muted: 222 20% 94%;
-    --muted-foreground: 222 47% 40%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 220 25% 40%;
 
-    --accent: 222 30% 94%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 226 96% 93%;
+    --accent-foreground: 220 25% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 222 20% 90%;
-    --input: 222 20% 90%;
-    --ring: 222 89% 64%;
+    --border: 220 20% 90%;
+    --input: 220 20% 90%;
+    --ring: 226 98% 57%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 40%;
-    --sidebar-primary: 222 89% 64%;
+    --sidebar-foreground: 220 25% 40%;
+    --sidebar-primary: 226 98% 57%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 30% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 222 20% 90%;
-    --sidebar-ring: 222 89% 64%;
+    --sidebar-accent: 220 30% 96%;
+    --sidebar-accent-foreground: 220 25% 15%;
+    --sidebar-border: 220 20% 90%;
+    --sidebar-ring: 226 98% 57%;
   }
 
   .dark {
-    --background: 222 47% 8%;
-    --foreground: 222 20% 98%;
+    --background: 220 25% 8%;
+    --foreground: 220 20% 98%;
 
-    --card: 222 47% 12%;
-    --card-foreground: 222 20% 98%;
+    --card: 220 25% 12%;
+    --card-foreground: 220 20% 98%;
 
-    --popover: 222 47% 12%;
-    --popover-foreground: 222 20% 98%;
+    --popover: 220 25% 12%;
+    --popover-foreground: 220 20% 98%;
 
-    --primary: 222 89% 64%;
+    --primary: 226 98% 57%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 47% 16%;
-    --secondary-foreground: 222 20% 98%;
+    --secondary: 220 25% 16%;
+    --secondary-foreground: 220 20% 98%;
 
-    --muted: 222 47% 16%;
-    --muted-foreground: 222 20% 60%;
+    --muted: 220 25% 16%;
+    --muted-foreground: 220 20% 60%;
 
-    --accent: 222 47% 16%;
-    --accent-foreground: 222 20% 98%;
+    --accent: 220 25% 16%;
+    --accent-foreground: 220 20% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 222 20% 98%;
+    --destructive-foreground: 220 20% 98%;
 
-    --border: 222 47% 20%;
-    --input: 222 47% 20%;
-    --ring: 222 89% 64%;
+    --border: 220 25% 20%;
+    --input: 220 25% 20%;
+    --ring: 226 98% 57%;
 
-    --sidebar-background: 222 47% 12%;
-    --sidebar-foreground: 222 20% 80%;
-    --sidebar-primary: 222 89% 64%;
+    --sidebar-background: 220 25% 12%;
+    --sidebar-foreground: 220 20% 80%;
+    --sidebar-primary: 226 98% 57%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 16%;
-    --sidebar-accent-foreground: 222 20% 98%;
-    --sidebar-border: 222 47% 20%;
-    --sidebar-ring: 222 89% 64%;
+    --sidebar-accent: 220 25% 16%;
+    --sidebar-accent-foreground: 220 20% 98%;
+    --sidebar-border: 220 25% 20%;
+    --sidebar-ring: 226 98% 57%;
   }
 }
 
@@ -100,17 +100,17 @@
 
 @layer components {
   .hero-gradient {
-    background: linear-gradient(135deg, rgba(64, 120, 255, 0.1) 0%, rgba(36, 84, 207, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(72, 149, 239, 0.05) 100%);
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .project-card {
-    @apply bg-white dark:bg-card rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-border;
+    @apply bg-white dark:bg-card rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden border border-border;
   }
   
   .nav-link {
@@ -118,6 +118,6 @@
   }
 
   .btn-gradient {
-    @apply bg-gradient-to-r from-primary to-blue-400 hover:from-blue-700 hover:to-primary text-white font-medium px-6 py-2 rounded-md transition-all duration-300 shadow-md hover:shadow-lg;
+    @apply bg-gradient-to-r from-searchifi-purple to-searchifi-light-purple hover:from-searchifi-dark-purple hover:to-searchifi-purple text-white font-medium px-6 py-2 rounded-md transition-all duration-300 shadow-button hover:shadow-lg;
   }
 }

@@ -5,172 +5,120 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RelatedProjects from "@/components/RelatedProjects";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Heart, ArrowLeft, Github, ExternalLink, Code, FileCode } from "lucide-react";
-
-// Mock project data (to be replaced with API call)
-const projectsData = [
-  {
-    id: "1",
-    title: "React Task Manager",
-    description: "A beautiful task management application built with React and Firebase",
-    author: "Jane Smith",
-    likes: 234,
-    tags: ["React", "Firebase", "Tailwind CSS"],
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-    githubUrl: "https://github.com/username/react-task-manager",
-    demoUrl: "https://react-task-manager-demo.com",
-    sourceCode: `
-// TaskList.tsx
-import React, { useState, useEffect } from 'react';
-import { db } from '../firebase';
-import { collection, query, onSnapshot, doc, updateDoc } from 'firebase/firestore';
-import Task from './Task';
-
-const TaskList = () => {
-  const [tasks, setTasks] = useState([]);
-  
-  useEffect(() => {
-    const q = query(collection(db, "tasks"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const taskList = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setTasks(taskList);
-    });
-    
-    return () => unsubscribe();
-  }, []);
-  
-  const toggleComplete = async (id, isComplete) => {
-    const taskRef = doc(db, "tasks", id);
-    await updateDoc(taskRef, {
-      isComplete: !isComplete
-    });
-  };
-  
-  return (
-    <div className="task-list">
-      <h2 className="text-2xl font-bold mb-4">Your Tasks</h2>
-      {tasks.length === 0 ? (
-        <p>No tasks yet. Add your first task!</p>
-      ) : (
-        tasks.map(task => (
-          <Task
-            key={task.id}
-            task={task}
-            toggleComplete={toggleComplete}
-          />
-        ))
-      )}
-    </div>
-  );
-};
-
-export default TaskList;
-`
-  },
-  {
-    id: "2",
-    title: "Weather Dashboard",
-    description: "Real-time weather application with beautiful visualizations",
-    author: "Mike Johnson",
-    likes: 186,
-    tags: ["React", "API", "Chart.js"],
-    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-    githubUrl: "https://github.com/username/weather-dashboard",
-    demoUrl: "https://weather-dashboard-demo.com",
-    sourceCode: `
-// WeatherDisplay.jsx
-import React from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-const WeatherDisplay = ({ weatherData }) => {
-  if (!weatherData) return <div>Loading weather data...</div>;
-  
-  const temperatures = weatherData.hourly.slice(0, 24).map(hour => hour.temp);
-  const labels = weatherData.hourly.slice(0, 24).map((hour, index) => \`\${index}:00\`);
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: 'Temperature °C',
-        data: temperatures,
-        borderColor: 'rgb(53, 162, 235)',
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
-      }
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: '24-Hour Forecast',
-      },
-    },
-  };
-
-  return (
-    <div className="weather-display">
-      <h2 className="text-2xl font-bold mb-4">
-        Current Weather: {weatherData.current.temp}°C
-      </h2>
-      <p className="mb-6">
-        {weatherData.current.weather[0].description}
-      </p>
-      <div className="chart-container">
-        <Line options={options} data={data} />
-      </div>
-    </div>
-  );
-};
-
-export default WeatherDisplay;
-`
-  }
-];
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
+import { ArrowLeft, Github, ExternalLink, Download, Heart, Share, Save } from "lucide-react";
+import { 
+  getProjects, 
+  formatDate, 
+  toggleLikeProject,
+  toggleSaveProject,
+  isProjectLiked,
+  isProjectSaved,
+  shareProject,
+  getDownloadUrl,
+  Project
+} from "@/utils/projectUtils";
 
 const ProjectDetailsPage = () => {
   const { id } = useParams();
-  const [project, setProject] = useState(null);
+  const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  
+  const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(false);
+  
+  // Check if the current user is the project owner
+  const isOwner = user && project && user.id === project.authorId;
 
   useEffect(() => {
-    // In a real application, you would fetch the project data from an API
+    // Fetch the project data
     const fetchProject = () => {
       setLoading(true);
-      const foundProject = projectsData.find(p => p.id === id);
+      const projects = getProjects();
+      const foundProject = projects.find(p => p.id === id);
       
       // Simulate API delay
       setTimeout(() => {
-        setProject(foundProject);
+        setProject(foundProject || null);
         setLoading(false);
+        
+        // Check if the project is liked or saved by the user
+        if (user && foundProject) {
+          setLiked(isProjectLiked(user.id, foundProject.id));
+          setSaved(isProjectSaved(user.id, foundProject.id));
+        }
       }, 500);
     };
 
     fetchProject();
-  }, [id]);
+  }, [id, user]);
+
+  const handleLikeToggle = () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to like projects",
+      });
+      return;
+    }
+    
+    if (project) {
+      const newLikedState = toggleLikeProject(user.id, project.id);
+      setLiked(newLikedState);
+      
+      // Update the project's like count in state
+      setProject(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          likes: newLikedState ? prev.likes + 1 : Math.max(0, prev.likes - 1)
+        };
+      });
+    }
+  };
+
+  const handleSaveToggle = () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to save projects",
+      });
+      return;
+    }
+    
+    if (project) {
+      const newSavedState = toggleSaveProject(user.id, project.id);
+      setSaved(newSavedState);
+    }
+  };
+
+  const handleShare = () => {
+    if (project) {
+      shareProject(project);
+    }
+  };
+
+  const handleDownload = () => {
+    if (!project) return;
+    
+    // Create a temporary anchor element to trigger download
+    const link = document.createElement('a');
+    link.href = getDownloadUrl(project);
+    link.download = project.fileName || `${project.title.toLowerCase().replace(/\s+/g, '-')}.zip`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Download started",
+      description: "Your download has started",
+    });
+  };
 
   if (loading) {
     return (
@@ -211,7 +159,7 @@ const ProjectDetailsPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow">
+      <main className="flex-grow bg-background">
         <div className="container mx-auto px-4 py-8">
           {/* Back button */}
           <div className="mb-6">
@@ -223,103 +171,157 @@ const ProjectDetailsPage = () => {
             </Link>
           </div>
           
-          {/* Project header */}
-          <div className="mb-8">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-              <h1 className="text-3xl font-bold">{project.title}</h1>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" className="gap-2 px-3">
-                  <Heart size={18} />
-                  <span>{project.likes}</span>
-                </Button>
-              </div>
-            </div>
-            <p className="text-muted-foreground mt-2 mb-4">{project.description}</p>
-            
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="text-sm text-muted-foreground">By {project.author}</span>
-              <span className="text-muted-foreground mx-2">•</span>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag, index) => (
-                  <Badge key={index} variant="secondary" className="bg-secondary/80">{tag}</Badge>
-                ))}
-              </div>
-            </div>
-            
-            <div className="flex flex-wrap gap-3">
-              {project.githubUrl && (
-                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="gap-2">
-                    <Github size={16} />
-                    GitHub Repository
-                  </Button>
-                </a>
-              )}
-              {project.demoUrl && (
-                <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="gap-2">
-                    <ExternalLink size={16} />
-                    Live Demo
-                  </Button>
-                </a>
-              )}
-            </div>
-          </div>
-          
-          {/* Project image */}
-          <div className="mb-8">
+          {/* Hero section with project image */}
+          <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden mb-8">
             <img 
               src={project.image} 
               alt={project.title} 
-              className="w-full h-64 object-cover rounded-lg"
+              className="w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{project.title}</h1>
+              <div className="flex flex-wrap items-center gap-2 text-white/90">
+                <span>By {project.author}</span>
+                <span className="mx-2">•</span>
+                <span>Uploaded on {formatDate(project.createdAt)}</span>
+              </div>
+            </div>
           </div>
           
-          {/* Tabs for different sections */}
-          <Tabs defaultValue="code" className="w-full">
-            <TabsList className="mb-6">
-              <TabsTrigger value="code" className="gap-2">
-                <FileCode size={16} />
-                Source Code
-              </TabsTrigger>
-              <TabsTrigger value="details" className="gap-2">
-                <Code size={16} />
-                Details
-              </TabsTrigger>
-            </TabsList>
+          {/* Project header */}
+          <div className="mb-8">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+              <div>
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  {project.tags.map((tag, index) => (
+                    <Badge key={index} variant="secondary" className="bg-secondary">{tag}</Badge>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  className={`gap-2 ${liked ? 'text-rose-500 border-rose-500 hover:bg-rose-500/10' : ''}`}
+                  onClick={handleLikeToggle}
+                >
+                  <Heart size={18} className={liked ? 'fill-rose-500' : ''} />
+                  <span>{project.likes}</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className={`gap-2 ${saved ? 'text-primary border-primary hover:bg-primary/10' : ''}`}
+                  onClick={handleSaveToggle}
+                >
+                  <Save size={18} className={saved ? 'fill-primary' : ''} />
+                  <span>{saved ? 'Saved' : 'Save'}</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="gap-2"
+                  onClick={handleShare}
+                >
+                  <Share size={18} />
+                  <span>Share</span>
+                </Button>
+              </div>
+            </div>
             
-            <TabsContent value="code" className="mt-0">
+            <Card className="mb-8">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Description</h2>
+                <p className="text-muted-foreground">{project.description}</p>
+              </CardContent>
+            </Card>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Links Section */}
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Source Code</h2>
-                  <ScrollArea className="h-[500px] w-full rounded-md border">
-                    <pre className="p-4 text-sm bg-secondary/20 rounded-md overflow-auto">
-                      <code>{project.sourceCode}</code>
-                    </pre>
-                  </ScrollArea>
+                  <h2 className="text-xl font-semibold mb-4">Project Links</h2>
+                  <div className="space-y-4">
+                    {/* Only show GitHub repo if the user is the owner or it's public */}
+                    {(isOwner || !project.repoUrl) && (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Github size={18} />
+                          <span>GitHub Repository</span>
+                        </div>
+                        {project.repoUrl && (
+                          <a 
+                            href={project.repoUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline"
+                          >
+                            Visit Repo
+                          </a>
+                        )}
+                      </div>
+                    )}
+                    
+                    {project.demoUrl && (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <ExternalLink size={18} />
+                          <span>Live Demo</span>
+                        </div>
+                        <a 
+                          href={project.demoUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          Visit Demo
+                        </a>
+                      </div>
+                    )}
+                    
+                    {/* Only show Download option for project owner */}
+                    {isOwner && (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Download size={18} />
+                          <span>Download ZIP</span>
+                        </div>
+                        <Button 
+                          variant="link" 
+                          className="p-0 h-auto text-primary"
+                          onClick={handleDownload}
+                        >
+                          Download
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-            
-            <TabsContent value="details" className="mt-0">
+              
+              {/* Details Section */}
               <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Project Details</h2>
-                  <p>
-                    This is a placeholder for additional project details. In a complete implementation,
-                    this section could include:
-                  </p>
-                  <ul className="list-disc pl-6 mt-4">
-                    <li>Project architecture</li>
-                    <li>Technologies used</li>
-                    <li>Installation instructions</li>
-                    <li>API documentation</li>
-                    <li>Contributors</li>
-                  </ul>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Language:</span>
+                      <span className="font-medium">{project.language}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Uploaded:</span>
+                      <span className="font-medium">{formatDate(project.createdAt)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Author:</span>
+                      <span className="font-medium">{project.author}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Likes:</span>
+                      <span className="font-medium">{project.likes}</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
           
           {/* Related Projects Section */}
           <RelatedProjects currentProjectId={project.id} tags={project.tags} />

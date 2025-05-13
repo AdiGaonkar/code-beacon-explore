@@ -9,16 +9,20 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Upload, FileArchive } from "lucide-react";
+import { Upload, FileArchive, Image } from "lucide-react";
 
 const UploadProjectPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedThumbnail, setSelectedThumbnail] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -54,8 +58,35 @@ const UploadProjectPage = () => {
     }
   };
 
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file format",
+          description: "Please upload an image file.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setSelectedThumbnail(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setThumbnailPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const triggerFileInput = () => {
     fileInputRef.current?.click();
+  };
+
+  const triggerThumbnailInput = () => {
+    thumbnailInputRef.current?.click();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,22 +101,35 @@ const UploadProjectPage = () => {
       return;
     }
     
+    if (!formData.repoUrl) {
+      toast({
+        title: "Repository URL required",
+        description: "Please enter your GitHub repository URL.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!selectedThumbnail) {
+      toast({
+        title: "Missing thumbnail",
+        description: "Please upload a thumbnail image for your project.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
       // This would be replaced with an API call to upload the project
       console.log("Form data to submit:", formData);
       console.log("File to upload:", selectedFile);
+      console.log("Thumbnail to upload:", selectedThumbnail);
       
-      // Generate a random image for the project
-      const imageUrls = [
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-        "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-        "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
-        "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
-      ];
-      const randomImage = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+      // For now, we'll just use the thumbnail preview directly
+      // In a real app, you would upload this to a server
+      const imageUrl = thumbnailPreview;
       
       // For now, we'll just save it to localStorage to simulate
       // a database operation
@@ -103,8 +147,9 @@ const UploadProjectPage = () => {
         authorId: user.id,
         likes: 0,
         createdAt: new Date().toISOString(),
-        image: randomImage,
-        fileName: selectedFile.name
+        image: imageUrl,
+        fileName: selectedFile.name,
+        status: "published"
       };
       
       existingProjects.push(newProject);
@@ -118,7 +163,7 @@ const UploadProjectPage = () => {
         description: "Your project has been shared with the community.",
       });
       
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error uploading project:", error);
       toast({
@@ -134,9 +179,9 @@ const UploadProjectPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow bg-gray-50 dark:bg-background py-12">
+      <main className="flex-grow bg-background py-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto bg-white dark:bg-card shadow-md rounded-lg p-6 md:p-8">
+          <div className="max-w-3xl mx-auto bg-white dark:bg-card shadow-card rounded-lg p-6 md:p-8">
             <div className="flex items-center justify-center mb-8">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-searchifi-purple to-searchifi-light-purple grid place-items-center">
                 <Upload className="text-white" size={20} />
@@ -173,7 +218,7 @@ const UploadProjectPage = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="repoUrl">Repository URL</Label>
+                  <Label htmlFor="repoUrl">Repository URL (required)</Label>
                   <Input
                     id="repoUrl"
                     name="repoUrl"
@@ -219,6 +264,48 @@ const UploadProjectPage = () => {
                     onChange={handleChange}
                     required
                   />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Project Thumbnail</Label>
+                <div 
+                  className={`border-2 border-dashed rounded-md p-6 cursor-pointer transition-colors ${
+                    thumbnailPreview ? 'border-primary' : 'border-input hover:border-searchifi-purple'
+                  }`}
+                  onClick={triggerThumbnailInput}
+                >
+                  <input 
+                    type="file" 
+                    ref={thumbnailInputRef} 
+                    className="hidden" 
+                    accept="image/*"
+                    onChange={handleThumbnailChange}
+                  />
+                  
+                  {thumbnailPreview ? (
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-full max-w-xs mx-auto mb-4">
+                        <img 
+                          src={thumbnailPreview} 
+                          alt="Thumbnail preview" 
+                          className="rounded-md w-full h-48 object-cover"
+                        />
+                        <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-1">
+                          <Image size={16} />
+                        </div>
+                      </div>
+                      <p className="text-sm text-center text-primary">Click to change thumbnail</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <Image className="w-10 h-10 mb-4 text-muted-foreground" />
+                      <p className="font-medium">Upload project thumbnail</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Recommended: 16:9 ratio, high resolution
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
               
