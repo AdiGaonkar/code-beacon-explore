@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -12,10 +13,10 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em rgba(249, 115, 22, 0.6));
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em rgba(249, 115, 22, 0.6));
 }
 
 @keyframes logo-spin {
@@ -39,4 +40,17 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Add black & orange theme specific styles */
+.black-orange-gradient {
+  background: linear-gradient(90deg, #1A1A1A 0%, #111111 100%);
+}
+
+.accent-border {
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+.accent-glow {
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
 }

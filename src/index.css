@@ -7,44 +7,44 @@
 
 @layer base {
   :root {
-    --background: 220 33% 98%;
-    --foreground: 220 25% 15%;
+    --background: 220 20% 97%;
+    --foreground: 220 25% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 15%;
+    --card-foreground: 220 25% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 15%;
+    --popover-foreground: 220 25% 10%;
 
-    --primary: 226 98% 57%;
+    --primary: 24 94% 53%; /* Orange */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 30% 96%;
-    --secondary-foreground: 220 25% 15%;
+    --secondary-foreground: 220 25% 10%;
 
     --muted: 220 20% 94%;
     --muted-foreground: 220 25% 40%;
 
-    --accent: 226 96% 93%;
-    --accent-foreground: 220 25% 15%;
+    --accent: 24 94% 93%;
+    --accent-foreground: 24 94% 40%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 220 20% 90%;
     --input: 220 20% 90%;
-    --ring: 226 98% 57%;
+    --ring: 24 94% 53%; /* Orange */
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 25% 40%;
-    --sidebar-primary: 226 98% 57%;
+    --sidebar-background: 0 0% 10%; /* Dark sidebar */
+    --sidebar-foreground: 0 0% 80%;
+    --sidebar-primary: 24 94% 53%; /* Orange */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 30% 96%;
-    --sidebar-accent-foreground: 220 25% 15%;
-    --sidebar-border: 220 20% 90%;
-    --sidebar-ring: 226 98% 57%;
+    --sidebar-accent: 220 30% 15%;
+    --sidebar-accent-foreground: 220 25% 98%;
+    --sidebar-border: 220 20% 25%;
+    --sidebar-ring: 24 94% 53%; /* Orange */
   }
 
   .dark {
@@ -57,7 +57,7 @@
     --popover: 220 25% 12%;
     --popover-foreground: 220 20% 98%;
 
-    --primary: 226 98% 57%;
+    --primary: 24 94% 53%; /* Orange */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 25% 16%;
@@ -66,24 +66,24 @@
     --muted: 220 25% 16%;
     --muted-foreground: 220 20% 60%;
 
-    --accent: 220 25% 16%;
-    --accent-foreground: 220 20% 98%;
+    --accent: 24 90% 20%;
+    --accent-foreground: 24 90% 90%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 220 20% 98%;
 
     --border: 220 25% 20%;
     --input: 220 25% 20%;
-    --ring: 226 98% 57%;
+    --ring: 24 94% 53%; /* Orange */
 
-    --sidebar-background: 220 25% 12%;
+    --sidebar-background: 220 25% 10%;
     --sidebar-foreground: 220 20% 80%;
-    --sidebar-primary: 226 98% 57%;
+    --sidebar-primary: 24 94% 53%; /* Orange */
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 25% 16%;
     --sidebar-accent-foreground: 220 20% 98%;
     --sidebar-border: 220 25% 20%;
-    --sidebar-ring: 226 98% 57%;
+    --sidebar-ring: 24 94% 53%; /* Orange */
   }
 }
 
@@ -100,7 +100,7 @@
 
 @layer components {
   .hero-gradient {
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(72, 149, 239, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(251, 146, 60, 0.07) 100%); /* Updated for orange */
   }
 
   .glass-card {
