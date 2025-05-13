@@ -64,11 +64,11 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				searchifi: {
-					'purple': '#F97316', // Changed to orange
+					'purple': '#F97316', // Orange
 					'light-purple': '#FB923C', // Lighter orange
 					'dark-purple': '#EA580C', // Darker orange
-					'light-gray': '#F8F9FE',
-					'dark-gray': '#1A1A1A', // Darkened
+					'light-gray': '#2E2E2E', // Dark gray
+					'dark-gray': '#0D0D0D', // Deep black
 				}
 			},
 			borderRadius: {
@@ -96,20 +96,26 @@ export default {
 				'float': {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-10px)' }
+				},
+				'glow': {
+					'0%, 100%': { boxShadow: '0 0 10px rgba(249, 115, 22, 0.7)' },
+					'50%': { boxShadow: '0 0 20px rgba(249, 115, 22, 0.9)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 5s ease-in-out infinite',
+				'glow': 'glow 2s ease-in-out infinite',
 			},
 			fontFamily: {
 				'inter': ['Inter', 'sans-serif'],
 			},
 			boxShadow: {
-				'card': '0 8px 30px rgba(0, 0, 0, 0.12)',
-				'card-hover': '0 15px 40px rgba(0, 0, 0, 0.15)',
-				'button': '0 4px 14px 0 rgba(249, 115, 22, 0.4)', // Updated for orange
+				'card': '0 8px 30px rgba(0, 0, 0, 0.4)',
+				'card-hover': '0 15px 40px rgba(249, 115, 22, 0.15)',
+				'button': '0 4px 14px 0 rgba(249, 115, 22, 0.4)',
+				'glow': '0 0 15px rgba(249, 115, 22, 0.6)',
 			}
 		}
 	},

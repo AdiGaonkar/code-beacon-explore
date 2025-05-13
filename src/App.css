@@ -44,7 +44,7 @@
 
 /* Add black & orange theme specific styles */
 .black-orange-gradient {
-  background: linear-gradient(90deg, #1A1A1A 0%, #111111 100%);
+  background: linear-gradient(90deg, #0D0D0D 0%, #1A1A1A 100%);
 }
 
 .accent-border {
@@ -53,4 +53,34 @@
 
 .accent-glow {
   box-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+}
+
+/* Glassmorphism effects */
+.glass-panel {
+  background: rgba(26, 26, 26, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(249, 115, 22, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Modern button styles */
+.neo-button {
+  background: linear-gradient(180deg, #F97316 0%, #EA580C 100%);
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+  transition: all 0.3s ease;
+}
+
+.neo-button:hover {
+  box-shadow: 0 6px 15px rgba(249, 115, 22, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Card hover effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
