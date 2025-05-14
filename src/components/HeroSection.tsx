@@ -9,14 +9,14 @@ const HeroSection = () => {
       <div className="container mx-auto">
         <div className="text-center max-w-4xl mx-auto">
           <div className="flex justify-center mb-6">
-            <div className="bg-white dark:bg-card shadow-lg p-3 rounded-full">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-blue-400 grid place-items-center animate-float">
-                <Search className="text-white" size={28} />
+            <div className="bg-black dark:bg-card shadow-lg p-3 rounded-full">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/70 grid place-items-center animate-float">
+                <Search className="text-black" size={28} />
               </div>
             </div>
           </div>
           
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
             Discover Developer Projects With Source Code
           </h1>
           
@@ -40,7 +40,7 @@ const HeroSection = () => {
         </div>
 
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          <div className="bg-white dark:bg-card rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300 border border-border">
+          <div className="bg-black dark:bg-card rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300 border border-border">
             <div className="w-12 h-12 rounded-lg bg-primary/10 grid place-items-center mb-4">
               <Search className="text-primary" size={24} />
             </div>
@@ -50,7 +50,7 @@ const HeroSection = () => {
             </p>
           </div>
           
-          <div className="bg-white dark:bg-card rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300 border border-border">
+          <div className="bg-black dark:bg-card rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300 border border-border">
             <div className="w-12 h-12 rounded-lg bg-primary/10 grid place-items-center mb-4">
               <Code className="text-primary" size={24} />
             </div>
@@ -60,7 +60,7 @@ const HeroSection = () => {
             </p>
           </div>
           
-          <div className="bg-white dark:bg-card rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300 border border-border">
+          <div className="bg-black dark:bg-card rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300 border border-border">
             <div className="w-12 h-12 rounded-lg bg-primary/10 grid place-items-center mb-4">
               <Eye className="text-primary" size={24} />
             </div>
