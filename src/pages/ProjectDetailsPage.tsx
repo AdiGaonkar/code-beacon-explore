@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowLeft, Github, ExternalLink, Download, Heart, Share, Save } from "lucide-react";
+import { ArrowLeft, Github, ExternalLink, Download, Heart, Share, Save, Monitor } from "lucide-react";
 import { 
   getProjects, 
   formatDate, 
@@ -31,6 +31,7 @@ const ProjectDetailsPage = () => {
   
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showLiveDemo, setShowLiveDemo] = useState(false);
   
   // Check if the current user is the project owner
   const isOwner = user && project && user.id === project.authorId;
@@ -120,6 +121,10 @@ const ProjectDetailsPage = () => {
     });
   };
 
+  const toggleLiveDemo = () => {
+    setShowLiveDemo(prev => !prev);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -179,8 +184,8 @@ const ProjectDetailsPage = () => {
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{project.title}</h1>
-              <div className="flex flex-wrap items-center gap-2 text-white/90">
+              <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">{project.title}</h1>
+              <div className="flex flex-wrap items-center gap-2 text-primary/90">
                 <span>By {project.author}</span>
                 <span className="mx-2">•</span>
                 <span>Uploaded on {formatDate(project.createdAt)}</span>
@@ -223,8 +228,51 @@ const ProjectDetailsPage = () => {
                   <Share size={18} />
                   <span>Share</span>
                 </Button>
+                <Button 
+                  variant={showLiveDemo ? "default" : "outline"}
+                  className="gap-2"
+                  onClick={toggleLiveDemo}
+                >
+                  <Monitor size={18} />
+                  <span>Live Demo</span>
+                </Button>
               </div>
             </div>
+            
+            {/* Live Demo Screen */}
+            {showLiveDemo && (
+              <Card className="mb-8 overflow-hidden">
+                <CardContent className="p-0 h-[500px] relative">
+                  {project.demoUrl ? (
+                    <iframe 
+                      src={project.demoUrl} 
+                      title={`${project.title} Live Demo`}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-black">
+                      <div className="text-center p-8">
+                        <Monitor size={48} className="mx-auto mb-4 text-primary/50" />
+                        <h3 className="text-xl font-medium mb-2 text-primary">No Live Demo Available</h3>
+                        <p className="text-muted-foreground max-w-md">
+                          The author hasn't provided a live demo URL for this project.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="absolute top-4 right-4 bg-black/70 border-border hover:bg-black/90"
+                    onClick={toggleLiveDemo}
+                  >
+                    Close Demo
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
             
             <Card className="mb-8">
               <CardContent className="p-6">
