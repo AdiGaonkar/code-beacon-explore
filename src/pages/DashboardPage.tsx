@@ -25,6 +25,7 @@ import {
   Project
 } from "@/utils/projectUtils";
 import { toast } from "@/components/ui/use-toast";
+import { DeleteProjectDialog } from "@/components/DeleteProjectDialog";
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -34,6 +35,10 @@ const DashboardPage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [savedProjects, setSavedProjects] = useState<Project[]>([]);
   const [likedProjects, setLikedProjects] = useState<Project[]>([]);
+  
+  // State for delete dialog
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   
   // Redirect if not logged in
   if (!user) {
@@ -68,13 +73,17 @@ const DashboardPage = () => {
     setLikedProjects(userLikedProjects);
   }, [user]);
   
-  const handleDeleteProject = (projectId: string) => {
-    if (window.confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
-      if (deleteProject(user.id, projectId)) {
-        // Update the projects list
-        setProjects(prevProjects => prevProjects.filter(p => p.id !== projectId));
-      }
+  const handleDeleteClick = (project: Project) => {
+    setProjectToDelete(project);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = (projectId: string) => {
+    if (deleteProject(user.id, projectId)) {
+      // Update the projects list
+      setProjects(prevProjects => prevProjects.filter(p => p.id !== projectId));
     }
+    setIsDeleteDialogOpen(false);
   };
 
   return (
@@ -196,7 +205,7 @@ const DashboardPage = () => {
                                     variant="ghost" 
                                     size="icon" 
                                     className="h-8 w-8 text-destructive hover:bg-destructive/10"
-                                    onClick={() => handleDeleteProject(project.id)}
+                                    onClick={() => handleDeleteClick(project)}
                                   >
                                     <Trash size={16} />
                                   </Button>
@@ -309,6 +318,14 @@ const DashboardPage = () => {
         </div>
       </main>
       <Footer />
+      
+      {/* Delete Project Confirmation Dialog */}
+      <DeleteProjectDialog 
+        isOpen={isDeleteDialogOpen}
+        setIsOpen={setIsDeleteDialogOpen}
+        project={projectToDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };
