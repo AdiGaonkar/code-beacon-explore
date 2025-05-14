@@ -7,43 +7,43 @@
 
 @layer base {
   :root {
-    --background: 20 20% 5%;
-    --foreground: 0 0% 90%;
+    --background: 0 0% 0%;
+    --foreground: 24 94% 95%;
 
-    --card: 20 10% 10%;
+    --card: 0 0% 5%;
     --card-foreground: 0 0% 90%;
 
-    --popover: 20 10% 8%;
+    --popover: 0 0% 3%;
     --popover-foreground: 0 0% 90%;
 
     --primary: 24 94% 53%; /* Orange */
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 20 10% 15%;
+    --secondary: 0 0% 9%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 20 10% 15%;
+    --muted: 0 0% 12%;
     --muted-foreground: 0 0% 70%;
 
-    --accent: 24 94% 93%;
-    --accent-foreground: 24 94% 40%;
+    --accent: 24 94% 53%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 0%;
 
-    --border: 20 15% 20%;
-    --input: 20 15% 20%;
+    --border: 24 94% 20%;
+    --input: 0 0% 7%;
     --ring: 24 94% 53%; /* Orange */
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 5%; /* Dark sidebar */
-    --sidebar-foreground: 0 0% 80%;
+    --sidebar-background: 0 0% 3%; /* Deep black sidebar */
+    --sidebar-foreground: 24 94% 80%;
     --sidebar-primary: 24 94% 53%; /* Orange */
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 30% 15%;
-    --sidebar-accent-foreground: 220 25% 98%;
-    --sidebar-border: 220 20% 15%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 24 94% 90%;
+    --sidebar-border: 24 94% 20%;
     --sidebar-ring: 24 94% 53%; /* Orange */
   }
 }
@@ -61,18 +61,18 @@
 
 @layer components {
   .hero-gradient {
-    background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(251, 146, 60, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(249, 115, 22, 0.05) 100%);
   }
 
   .glass-card {
-    background: rgba(26, 26, 26, 0.7);
+    background: rgba(13, 13, 13, 0.9);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.2);
   }
 
   .project-card {
-    @apply bg-card rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden border border-border;
+    @apply bg-card rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden border border-primary/20;
   }
   
   .nav-link {
@@ -80,12 +80,12 @@
   }
 
   .btn-gradient {
-    @apply bg-gradient-to-r from-searchifi-purple to-searchifi-light-purple hover:from-searchifi-dark-purple hover:to-searchifi-purple text-white font-medium px-6 py-2 rounded-md transition-all duration-300 shadow-button hover:shadow-glow;
+    @apply bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-primary text-black font-medium px-6 py-2 rounded-md transition-all duration-300 shadow-button hover:shadow-glow;
   }
   
-  /* New theme specific classes */
+  /* Theme specific classes */
   .neo-card {
-    @apply bg-card border border-border/50 rounded-lg shadow-card hover:shadow-card-hover transition-all duration-300;
+    @apply bg-card border border-primary/20 rounded-lg shadow-card hover:shadow-card-hover transition-all duration-300;
   }
   
   .glow-border {
@@ -93,7 +93,7 @@
   }
   
   .glass-effect {
-    @apply bg-black/40 backdrop-blur-md border border-white/5 rounded-xl;
+    @apply bg-black/80 backdrop-blur-md border border-primary/10 rounded-xl;
   }
   
   .hover-glow {

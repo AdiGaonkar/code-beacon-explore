@@ -39,7 +39,7 @@
 }
 
 .read-the-docs {
-  color: #888;
+  color: #F97316;
 }
 
 /* Add black & orange theme specific styles */
@@ -57,10 +57,10 @@
 
 /* Glassmorphism effects */
 .glass-panel {
-  background: rgba(26, 26, 26, 0.7);
+  background: rgba(13, 13, 13, 0.9);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(249, 115, 22, 0.1);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 24px rgba(249, 115, 22, 0.2);
 }
 
 /* Modern button styles */
@@ -82,5 +82,5 @@
 
 .hover-lift:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
 }

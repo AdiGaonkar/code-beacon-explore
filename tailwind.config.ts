@@ -112,8 +112,8 @@ export default {
 				'inter': ['Inter', 'sans-serif'],
 			},
 			boxShadow: {
-				'card': '0 8px 30px rgba(0, 0, 0, 0.4)',
-				'card-hover': '0 15px 40px rgba(249, 115, 22, 0.15)',
+				'card': '0 8px 30px rgba(249, 115, 22, 0.2)',
+				'card-hover': '0 15px 40px rgba(249, 115, 22, 0.3)',
 				'button': '0 4px 14px 0 rgba(249, 115, 22, 0.4)',
 				'glow': '0 0 15px rgba(249, 115, 22, 0.6)',
 			}
