@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -30,8 +29,11 @@ import {
   FormInput, 
   MousePointerClick, 
   ArrowRight,
-  CheckCircle
+  CheckCircle,
+  User
 } from "lucide-react";
+import { getComponents } from "@/utils/componentUtils";
+import { useAuth } from "@/contexts/AuthContext";
 
 type ComponentCategory = {
   id: string;
@@ -79,7 +81,7 @@ const componentCategories: ComponentCategory[] = [
   }
 ];
 
-const ComponentCard = ({ category }: { category: ComponentCategory }) => {
+const CategoryCard = ({ category }: { category: ComponentCategory }) => {
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg border-border bg-card">
       <CardHeader className="pb-2">
@@ -156,13 +158,74 @@ const ComponentCard = ({ category }: { category: ComponentCategory }) => {
   );
 };
 
+const UserUploadedComponentCard = ({ component }: { component: any }) => {
+  return (
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg border-border bg-card">
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-xl">{component.title}</CardTitle>
+          <Component className="text-searchifi-purple" size={24} />
+        </div>
+        <CardDescription>{component.description.substring(0, 120)}...</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="h-40 bg-secondary/30 rounded-md relative">
+          {component.image && (
+            <img 
+              src={component.image} 
+              alt={component.title} 
+              className="w-full h-full object-cover object-center rounded-md"
+            />
+          )}
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {component.tags.map((tag: string, i: number) => (
+            <Badge key={i} variant="secondary">{tag}</Badge>
+          ))}
+        </div>
+      </CardContent>
+      <CardFooter className="border-t bg-muted/10 flex justify-between">
+        <div className="flex items-center gap-2">
+          <User size={14} className="text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">{component.author}</span>
+        </div>
+        <Link to={`/components/${component.id}`}>
+          <Button variant="ghost" size="sm" className="text-searchifi-purple">
+            View Component <ArrowRight size={16} className="ml-1" />
+          </Button>
+        </Link>
+      </CardFooter>
+    </Card>
+  );
+};
+
 const ComponentsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [userComponents, setUserComponents] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useAuth();
 
-  // Filter categories if one is selected (for future expansion)
+  useEffect(() => {
+    // Load user uploaded components from localStorage
+    const components = getComponents();
+    setUserComponents(components);
+  }, []);
+
+  // Filter categories if one is selected
   const displayedCategories = selectedCategory 
     ? componentCategories.filter(cat => cat.id === selectedCategory) 
     : componentCategories;
+
+  // Filter user components based on category and search query
+  const filteredUserComponents = userComponents.filter(component => {
+    const matchesCategory = !selectedCategory || component.category.toLowerCase() === selectedCategory.toLowerCase();
+    const matchesSearch = !searchQuery || 
+      component.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      component.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      component.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -252,6 +315,8 @@ const ComponentsPage = () => {
                       <Input 
                         placeholder="Search components..." 
                         className="pl-10"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                       />
                       <Code className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
                     </div>
@@ -261,13 +326,29 @@ const ComponentsPage = () => {
 
               <section className="py-12 px-4">
                 <div className="container mx-auto">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {displayedCategories.map(category => (
-                      <ComponentCard key={category.id} category={category} />
-                    ))}
+                  {/* Show user uploaded components if available */}
+                  {filteredUserComponents.length > 0 && (
+                    <div className="mb-12">
+                      <h2 className="text-2xl font-semibold mb-6">Community Components</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {filteredUserComponents.map((component) => (
+                          <UserUploadedComponentCard key={component.id} component={component} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Component categories section */}
+                  <div className="mt-8">
+                    <h2 className="text-2xl font-semibold mb-6">Component Categories</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {displayedCategories.map(category => (
+                        <CategoryCard key={category.id} category={category} />
+                      ))}
+                    </div>
                   </div>
                   
-                  {displayedCategories.length === 0 && (
+                  {displayedCategories.length === 0 && filteredUserComponents.length === 0 && (
                     <div className="text-center py-16">
                       <p className="text-xl font-medium">No components found</p>
                       <p className="text-muted-foreground">Try adjusting your search criteria</p>
