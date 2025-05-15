@@ -7,8 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { ArrowLeft, Copy, Heart, Share } from "lucide-react";
+import { ArrowLeft, Copy, Heart, Share, Code } from "lucide-react";
 import { formatDate } from "@/utils/projectUtils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 
 interface Component {
   id: string;
@@ -35,9 +39,12 @@ const CodePreview = ({ code }: { code: string }) => {
   };
 
   return (
-    <div className="relative border border-border rounded-md overflow-hidden">
+    <div className="relative border border-border rounded-md overflow-hidden h-full flex flex-col">
       <div className="flex justify-between items-center bg-secondary/20 px-4 py-2 border-b border-border">
-        <span className="text-sm font-medium">Source Code</span>
+        <div className="flex items-center gap-2">
+          <Code size={16} className="text-searchifi-purple" />
+          <span className="text-sm font-medium">Source Code</span>
+        </div>
         <Button 
           variant="ghost" 
           size="sm" 
@@ -48,7 +55,7 @@ const CodePreview = ({ code }: { code: string }) => {
           Copy
         </Button>
       </div>
-      <pre className="bg-card p-4 overflow-auto max-h-[500px] text-sm">
+      <pre className="bg-card p-4 overflow-auto flex-grow text-sm">
         <code className="language-jsx">{code}</code>
       </pre>
     </div>
@@ -62,6 +69,7 @@ const ComponentDetailsPage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [liked, setLiked] = useState(false);
+  const [activeTab, setActiveTab] = useState("preview");
 
   useEffect(() => {
     const fetchComponent = () => {
@@ -183,9 +191,9 @@ const ComponentDetailsPage = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow bg-background">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-6">
           {/* Back button */}
-          <div className="mb-6">
+          <div className="mb-4">
             <Link to="/components">
               <Button variant="ghost" size="sm">
                 <ArrowLeft size={16} className="mr-2" />
@@ -194,64 +202,89 @@ const ComponentDetailsPage = () => {
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Preview section */}
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-4">{component.title}</h1>
-              
-              <div className="flex flex-wrap items-center gap-2 mb-4">
-                <Badge>{component.category}</Badge>
-                {component.tags.map((tag, index) => (
-                  <Badge key={index} variant="secondary" className="bg-secondary">{tag}</Badge>
-                ))}
-              </div>
-              
-              <div className="flex items-center gap-4 mb-6 text-sm text-muted-foreground">
-                <span>By {component.author}</span>
-                <span>•</span>
-                <span>Uploaded on {formatDate(component.createdAt)}</span>
-              </div>
-              
-              <div className="mb-6">
-                <p className="text-muted-foreground">{component.description}</p>
-              </div>
-              
-              <div className="bg-white dark:bg-card rounded-md border border-border overflow-hidden mb-6">
-                <div className="aspect-video bg-secondary/30 flex items-center justify-center p-4">
-                  <img 
-                    src={component.image} 
-                    alt={component.title} 
-                    className="max-w-full max-h-full object-contain"
-                  />
+          {/* Component Header */}
+          <div className="mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold mb-2">{component.title}</h1>
+            
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <Badge>{component.category}</Badge>
+              {component.tags.map((tag, index) => (
+                <Badge key={index} variant="secondary" className="bg-secondary">{tag}</Badge>
+              ))}
+            </div>
+            
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <span>By {component.author}</span>
+              <span>•</span>
+              <span>Uploaded on {formatDate(component.createdAt)}</span>
+            </div>
+          </div>
+          
+          <p className="text-muted-foreground mb-6">{component.description}</p>
+          
+          <div className="flex gap-4 mb-6">
+            <Button 
+              variant="outline" 
+              className={`gap-2 ${liked ? 'text-rose-500 border-rose-500 hover:bg-rose-500/10' : ''}`}
+              onClick={handleLikeToggle}
+            >
+              <Heart size={18} className={liked ? 'fill-rose-500' : ''} />
+              <span>{component.likes}</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="gap-2"
+              onClick={handleShare}
+            >
+              <Share size={18} />
+              <span>Share</span>
+            </Button>
+          </div>
+          
+          <Separator className="mb-6" />
+          
+          {/* Mobile tabs view */}
+          <div className="md:hidden mb-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="preview">Preview</TabsTrigger>
+                <TabsTrigger value="code">Code</TabsTrigger>
+              </TabsList>
+              <TabsContent value="preview" className="mt-4">
+                <div className="bg-white dark:bg-card rounded-md border border-border overflow-hidden">
+                  <AspectRatio ratio={16/9} className="bg-secondary/10 flex items-center justify-center p-4">
+                    <img 
+                      src={component.image} 
+                      alt={component.title} 
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </AspectRatio>
                 </div>
-                
-                <div className="p-4 flex justify-between">
-                  <div className="flex items-center gap-4">
-                    <Button 
-                      variant="outline" 
-                      className={`gap-2 ${liked ? 'text-rose-500 border-rose-500 hover:bg-rose-500/10' : ''}`}
-                      onClick={handleLikeToggle}
-                    >
-                      <Heart size={18} className={liked ? 'fill-rose-500' : ''} />
-                      <span>{component.likes}</span>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="gap-2"
-                      onClick={handleShare}
-                    >
-                      <Share size={18} />
-                      <span>Share</span>
-                    </Button>
-                  </div>
-                </div>
+              </TabsContent>
+              <TabsContent value="code" className="mt-4">
+                <CodePreview code={component.sourceCode} />
+              </TabsContent>
+            </Tabs>
+          </div>
+          
+          {/* Desktop split view */}
+          <div className="hidden md:grid grid-cols-2 gap-8 h-[calc(100vh-350px)]">
+            {/* Preview panel */}
+            <div className="border border-border rounded-lg overflow-hidden flex flex-col">
+              <div className="bg-secondary/20 px-4 py-2 border-b border-border">
+                <h3 className="text-sm font-medium">Preview</h3>
+              </div>
+              <div className="flex-grow bg-secondary/10 flex items-center justify-center p-4 overflow-auto">
+                <img 
+                  src={component.image} 
+                  alt={component.title} 
+                  className="max-w-full max-h-full object-contain"
+                />
               </div>
             </div>
             
-            {/* Source code section */}
-            <div>
-              <CodePreview code={component.sourceCode} />
-            </div>
+            {/* Code panel */}
+            <CodePreview code={component.sourceCode} />
           </div>
         </div>
       </main>
