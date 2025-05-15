@@ -12,10 +12,12 @@ import ProjectDetailsPage from "@/pages/ProjectDetailsPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import UploadProjectPage from "@/pages/UploadProjectPage";
+import UploadComponentPage from "@/pages/UploadComponentPage";
 import DashboardPage from "@/pages/DashboardPage";
 import NotFound from "@/pages/NotFound";
 import ProfileSettingsPage from "@/pages/ProfileSettingsPage";
 import ComponentsPage from "@/pages/ComponentsPage";
+import ComponentDetailsPage from "@/pages/ComponentDetailsPage";
 
 const queryClient = new QueryClient();
 
@@ -33,9 +35,11 @@ const App = () => (
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/upload-project" element={<UploadProjectPage />} />
+            <Route path="/upload-component" element={<UploadComponentPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile/settings" element={<ProfileSettingsPage />} />
             <Route path="/components" element={<ComponentsPage />} />
+            <Route path="/components/:id" element={<ComponentDetailsPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

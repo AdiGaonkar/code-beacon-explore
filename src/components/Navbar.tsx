@@ -4,15 +4,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Search, Menu, X, Code, Component } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import UploadOptions from "@/components/UploadOptions";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showUploadOptions, setShowUploadOptions] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   
   const handleShareProject = () => {
     if (user) {
-      navigate("/upload-project");
+      setShowUploadOptions(true);
     } else {
       navigate("/login", { state: { from: "/upload-project" } });
     }
@@ -166,6 +168,12 @@ const Navbar = () => {
           </div>
         </div>
       )}
+
+      {/* Upload Options Dialog */}
+      <UploadOptions 
+        open={showUploadOptions} 
+        onOpenChange={setShowUploadOptions} 
+      />
     </header>
   );
 };

@@ -11,33 +11,38 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-blue-400 grid place-items-center">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-searchifi-purple to-searchifi-light-purple grid place-items-center">
                 <Search className="text-white" size={20} />
               </div>
               <h1 className="text-xl font-bold">Searchifi</h1>
             </Link>
             <p className="mt-4 text-muted-foreground max-w-md">
-              Discover and explore amazing developer projects with full source code access.
+              Discover and explore amazing developer projects and UI components with full source code access.
               Build, learn, and get inspired by the community.
             </p>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Product</h3>
+            <h3 className="font-semibold mb-4">Explore</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/projects" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Explore Projects
+                  Projects
                 </Link>
               </li>
               <li>
-                <Link to="/register" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Sign Up
+                <Link to="/components" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Components
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Sign In
+                <Link to="/upload-project" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Share Project
+                </Link>
+              </li>
+              <li>
+                <Link to="/upload-component" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Share Component
                 </Link>
               </li>
             </ul>
@@ -61,6 +66,11 @@ const Footer = () => {
                   Terms of Service
                 </Link>
               </li>
+              <li>
+                <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -78,6 +88,9 @@ const Footer = () => {
             </a>
             <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
               Discord
+            </a>
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              LinkedIn
             </a>
           </div>
         </div>
