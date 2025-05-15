@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Search, Filter, Heart, ArrowRight } from "lucide-react";
+import { Search, Filter, Heart, ArrowRight, Code, Layers } from "lucide-react";
 import { 
   Pagination, 
   PaginationContent, 
@@ -15,6 +15,21 @@ import {
   PaginationNext, 
   PaginationPrevious 
 } from "@/components/ui/pagination";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarGroup,
+  SidebarTrigger,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarInset
+} from "@/components/ui/sidebar";
 
 // Mock data
 const defaultProjects = [
@@ -74,6 +89,32 @@ const defaultProjects = [
   }
 ];
 
+// Programming languages for sidebar
+const programmingLanguages = [
+  { name: "JavaScript", count: 128 },
+  { name: "TypeScript", count: 87 },
+  { name: "Python", count: 64 },
+  { name: "Java", count: 42 },
+  { name: "C#", count: 38 },
+  { name: "PHP", count: 31 },
+  { name: "Go", count: 27 },
+  { name: "Rust", count: 18 },
+  { name: "Ruby", count: 16 },
+  { name: "Swift", count: 14 },
+  { name: "Kotlin", count: 11 },
+  { name: "Dart", count: 9 }
+];
+
+// Project categories
+const projectCategories = [
+  { name: "Web Applications", count: 145 },
+  { name: "Mobile Apps", count: 78 },
+  { name: "Data Science", count: 56 },
+  { name: "UI Components", count: 38 },
+  { name: "API & Backend", count: 29 },
+  { name: "Tools & Utilities", count: 21 }
+];
+
 const ProjectCard = ({ project }: { project: any }) => {
   return (
     <div className="project-card flex flex-col h-full">
@@ -118,6 +159,8 @@ const ProjectsPage = () => {
   const projectsPerPage = 6;
   const [allProjects, setAllProjects] = useState<any[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   // Get user submitted projects and combine with default projects
   useEffect(() => {
@@ -136,7 +179,7 @@ const ProjectsPage = () => {
     setAllTags(tags as string[]);
   }, []);
 
-  // Filter projects based on search term and selected tags
+  // Filter projects based on search term, selected tags, languages, and categories
   const filteredProjects = allProjects.filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          project.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -144,7 +187,11 @@ const ProjectsPage = () => {
     const matchesTags = selectedTags.length === 0 || 
                         (project.tags && selectedTags.some(tag => project.tags.includes(tag)));
     
-    return matchesSearch && matchesTags;
+    // For demo purposes, we'll pretend all projects match the selected languages and categories
+    const matchesLanguages = selectedLanguages.length === 0 || true;
+    const matchesCategories = selectedCategories.length === 0 || true;
+    
+    return matchesSearch && matchesTags && matchesLanguages && matchesCategories;
   });
 
   // Calculate pagination
@@ -162,124 +209,207 @@ const ProjectsPage = () => {
     setCurrentPage(1); // Reset to first page when filters change
   };
 
+  const toggleLanguage = (language: string) => {
+    setSelectedLanguages(prev => 
+      prev.includes(language)
+        ? prev.filter(l => l !== language)
+        : [...prev, language]
+    );
+    setCurrentPage(1);
+  };
+
+  const toggleCategory = (category: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+    setCurrentPage(1);
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-grow">
-        <div className="bg-secondary/30 dark:bg-secondary/10 py-12 px-4 border-b border-border">
-          <div className="container mx-auto">
-            <h1 className="text-3xl font-bold mb-6">Explore Projects</h1>
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-grow">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
-                <Input 
-                  placeholder="Search for projects..." 
-                  className="pl-10"
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setCurrentPage(1); // Reset to first page when search changes
-                  }}
-                />
-              </div>
-              <div>
-                <Button variant="outline" className="w-full md:w-auto gap-2">
-                  <Filter size={18} />
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex flex-1">
+          <Sidebar collapsible="icon" variant="inset">
+            <SidebarHeader>
+              <div className="flex items-center justify-between p-2">
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <Layers size={20} className="text-searchifi-purple" />
                   Filters
-                </Button>
+                </h2>
+                <SidebarTrigger />
               </div>
-            </div>
-            
-            <div className="mt-6 flex flex-wrap gap-2">
-              {allTags.map((tag, index) => (
-                <Badge 
-                  key={index} 
-                  variant={selectedTags.includes(tag) ? "default" : "outline"}
-                  className={`cursor-pointer ${
-                    selectedTags.includes(tag) 
-                      ? "bg-searchifi-purple" 
-                      : "hover:bg-searchifi-purple/10"
-                  }`}
-                  onClick={() => toggleTag(tag)}
-                >
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </div>
+            </SidebarHeader>
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarGroupLabel>Languages</SidebarGroupLabel>
+                <SidebarGroupContent className="space-y-1">
+                  {programmingLanguages.map((lang) => (
+                    <div key={lang.name} className="flex items-center space-x-2 px-2 py-1 rounded-md hover:bg-secondary/50 cursor-pointer">
+                      <Checkbox 
+                        id={`lang-${lang.name}`} 
+                        checked={selectedLanguages.includes(lang.name)}
+                        onCheckedChange={() => toggleLanguage(lang.name)}
+                        className="border-searchifi-purple data-[state=checked]:bg-searchifi-purple"
+                      />
+                      <label
+                        htmlFor={`lang-${lang.name}`}
+                        className="flex-1 cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {lang.name}
+                      </label>
+                      <span className="text-xs text-muted-foreground">{lang.count}</span>
+                    </div>
+                  ))}
+                </SidebarGroupContent>
+              </SidebarGroup>
+              
+              <SidebarGroup>
+                <SidebarGroupLabel>Project Categories</SidebarGroupLabel>
+                <SidebarGroupContent className="space-y-1">
+                  {projectCategories.map((category) => (
+                    <div key={category.name} className="flex items-center space-x-2 px-2 py-1 rounded-md hover:bg-secondary/50 cursor-pointer">
+                      <Checkbox 
+                        id={`cat-${category.name}`} 
+                        checked={selectedCategories.includes(category.name)}
+                        onCheckedChange={() => toggleCategory(category.name)}
+                        className="border-searchifi-purple data-[state=checked]:bg-searchifi-purple"
+                      />
+                      <label
+                        htmlFor={`cat-${category.name}`}
+                        className="flex-1 cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {category.name}
+                      </label>
+                      <span className="text-xs text-muted-foreground">{category.count}</span>
+                    </div>
+                  ))}
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+          </Sidebar>
 
-        <section className="py-12 px-4">
-          <div className="container mx-auto">
-            <div className="mb-8 flex justify-between items-center">
-              <h2 className="text-xl font-semibold">
-                {filteredProjects.length} {filteredProjects.length === 1 ? 'Project' : 'Projects'} Found
-              </h2>
-              <div className="flex gap-2">
-                <Button variant="ghost" size="sm">
-                  Most Recent
-                </Button>
-                <Button variant="ghost" size="sm">
-                  Most Popular
-                </Button>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {currentProjects.map(project => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
-            
-            {filteredProjects.length === 0 && (
-              <div className="text-center py-16">
-                <p className="text-xl font-medium mb-2">No projects found</p>
-                <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
-              </div>
-            )}
-            
-            {/* Pagination */}
-            {filteredProjects.length > 0 && (
-              <div className="mt-12">
-                <Pagination>
-                  <PaginationContent>
-                    {currentPage > 1 && (
-                      <PaginationItem>
-                        <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} />
-                      </PaginationItem>
-                    )}
-                    
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink 
-                          isActive={page === currentPage}
-                          onClick={() => handlePageChange(page)}
-                          className={page === currentPage ? "bg-searchifi-purple text-white border-searchifi-purple hover:bg-searchifi-purple/90" : ""}
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
+          <SidebarInset>
+            <main className="flex-grow">
+              <div className="bg-secondary/30 dark:bg-secondary/10 py-12 px-4 border-b border-border">
+                <div className="container mx-auto">
+                  <h1 className="text-3xl font-bold mb-6">Explore Projects</h1>
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="relative flex-grow">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
+                      <Input 
+                        placeholder="Search for projects..." 
+                        className="pl-10"
+                        value={searchTerm}
+                        onChange={(e) => {
+                          setSearchTerm(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Button variant="outline" className="w-full md:w-auto gap-2">
+                        <Filter size={18} />
+                        Filters
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {allTags.map((tag, index) => (
+                      <Badge 
+                        key={index} 
+                        variant={selectedTags.includes(tag) ? "default" : "outline"}
+                        className={`cursor-pointer ${
+                          selectedTags.includes(tag) 
+                            ? "bg-searchifi-purple" 
+                            : "hover:bg-searchifi-purple/10"
+                        }`}
+                        onClick={() => toggleTag(tag)}
+                      >
+                        {tag}
+                      </Badge>
                     ))}
-                    
-                    {currentPage < totalPages && (
-                      <PaginationItem>
-                        <PaginationNext onClick={() => handlePageChange(currentPage + 1)} />
-                      </PaginationItem>
-                    )}
-                  </PaginationContent>
-                </Pagination>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
+
+              <section className="py-12 px-4">
+                <div className="container mx-auto">
+                  <div className="mb-8 flex justify-between items-center">
+                    <h2 className="text-xl font-semibold">
+                      {filteredProjects.length} {filteredProjects.length === 1 ? 'Project' : 'Projects'} Found
+                    </h2>
+                    <div className="flex gap-2">
+                      <Button variant="ghost" size="sm">
+                        Most Recent
+                      </Button>
+                      <Button variant="ghost" size="sm">
+                        Most Popular
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {currentProjects.map(project => (
+                      <ProjectCard key={project.id} project={project} />
+                    ))}
+                  </div>
+                  
+                  {filteredProjects.length === 0 && (
+                    <div className="text-center py-16">
+                      <p className="text-xl font-medium mb-2">No projects found</p>
+                      <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
+                    </div>
+                  )}
+                  
+                  {/* Pagination */}
+                  {filteredProjects.length > 0 && (
+                    <div className="mt-12">
+                      <Pagination>
+                        <PaginationContent>
+                          {currentPage > 1 && (
+                            <PaginationItem>
+                              <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} />
+                            </PaginationItem>
+                          )}
+                          
+                          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                            <PaginationItem key={page}>
+                              <PaginationLink 
+                                isActive={page === currentPage}
+                                onClick={() => handlePageChange(page)}
+                                className={page === currentPage ? "bg-searchifi-purple text-white border-searchifi-purple hover:bg-searchifi-purple/90" : ""}
+                              >
+                                {page}
+                              </PaginationLink>
+                            </PaginationItem>
+                          ))}
+                          
+                          {currentPage < totalPages && (
+                            <PaginationItem>
+                              <PaginationNext onClick={() => handlePageChange(currentPage + 1)} />
+                            </PaginationItem>
+                          )}
+                        </PaginationContent>
+                      </Pagination>
+                    </div>
+                  )}
+                </div>
+              </section>
+            </main>
+          </SidebarInset>
+        </div>
+        <Footer />
+      </div>
+    </SidebarProvider>
   );
 };
 

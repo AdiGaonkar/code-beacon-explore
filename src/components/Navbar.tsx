@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, Code, Component } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
@@ -30,8 +30,13 @@ const Navbar = () => {
           </Link>
           
           <nav className="hidden md:flex items-center gap-6">
-            <Link to="/projects" className="nav-link">
+            <Link to="/projects" className="nav-link flex items-center gap-1">
+              <Code size={16} />
               Explore
+            </Link>
+            <Link to="/components" className="nav-link flex items-center gap-1">
+              <Component size={16} />
+              Components
             </Link>
             <Link to="/about" className="nav-link">
               About
@@ -84,10 +89,19 @@ const Navbar = () => {
           <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
             <Link 
               to="/projects" 
-              className="block py-2 nav-link"
+              className="block py-2 nav-link flex items-center gap-2"
               onClick={() => setIsOpen(false)}
             >
+              <Code size={16} />
               Explore
+            </Link>
+            <Link 
+              to="/components" 
+              className="block py-2 nav-link flex items-center gap-2"
+              onClick={() => setIsOpen(false)}
+            >
+              <Component size={16} />
+              Components
             </Link>
             <Link 
               to="/about" 
